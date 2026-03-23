@@ -44,8 +44,6 @@ FOCUS
 
 **AI / ML**
 
-![OpenAI](https://img.shields.io/badge/OpenAI-111111?style=flat-square&logo=openai&logoColor=ffffff)
-![Anthropic](https://img.shields.io/badge/Anthropic-111111?style=flat-square&logoColor=ffffff)
 ![MLX](https://img.shields.io/badge/Apple_MLX-111111?style=flat-square&logo=apple&logoColor=ffffff)
 
 **Infrastructure**
