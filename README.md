@@ -1,69 +1,131 @@
-```
-╔══════════════════════════════════════════════════════════════╗
-║                   NATAN  //  VAJBRATYA                       ║
-║            Radiologist  ·  Healthtech Engineer               ║
-║                      @ Laudos.AI                             ║
-╚══════════════════════════════════════════════════════════════╝
-```
-
----
-
-**I am a radiologist who writes production code.**
-
-I work at the intersection of clinical radiology and software engineering — building the systems that bring AI into real diagnostic workflows. Currently at [**Laudos.AI**](https://laudos.ai), developing autonomous agent infrastructure that connects PACS, EHR, DICOM, FHIR, worklists, quality control, and critical findings routing.
-
-I understand the clinical requirements of a radiologist reading CTs at 2am *and* the engineering constraints of building reliable, auditable systems that operate on patient data at scale.
-
----
+<div align="center">
 
 ```
-FOCUS
-──────────────────────────────────────────────────────────────
-  Autonomous AI agents for radiology workflow
-  Medical imaging pipelines  ·  LLM orchestration
-  PACS / EHR integration  ·  DICOM / FHIR / HL7
-  Structured radiology reporting  ·  Critical findings routing
-──────────────────────────────────────────────────────────────
+███╗   ██╗ █████╗ ████████╗ █████╗ ███╗   ██╗
+████╗  ██║██╔══██╗╚══██╔══╝██╔══██╗████╗  ██║
+██╔██╗ ██║███████║   ██║   ███████║██╔██╗ ██║
+██║╚██╗██║██╔══██║   ██║   ██╔══██║██║╚██╗██║
+██║ ╚████║██║  ██║   ██║   ██║  ██║██║ ╚████║
+╚═╝  ╚═══╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝
+
+P A R A Í S O   R I B E I R O
 ```
 
----
+<br>
 
-**Languages**
+**RADIOLOGIST · SYSTEMS ENGINEER · FOUNDER**
 
-![TypeScript](https://img.shields.io/badge/TypeScript-111111?style=flat-square&logo=typescript&logoColor=ffffff)
-![Python](https://img.shields.io/badge/Python-111111?style=flat-square&logo=python&logoColor=ffffff)
-![Swift](https://img.shields.io/badge/Swift-111111?style=flat-square&logo=swift&logoColor=ffffff)
-![Shell](https://img.shields.io/badge/Shell-111111?style=flat-square&logo=gnubash&logoColor=ffffff)
+<br>
 
-**Medical & Imaging**
+![](https://img.shields.io/badge/CLEARANCE_LEVEL-■■■■■-111111?style=flat-square&labelColor=000000&color=333333)
 
-![DICOM](https://img.shields.io/badge/DICOM-111111?style=flat-square&logoColor=ffffff&label=DICOM&labelColor=111111)
-![FHIR](https://img.shields.io/badge/FHIR_R4-111111?style=flat-square&logoColor=ffffff&labelColor=111111)
-![HL7](https://img.shields.io/badge/HL7-111111?style=flat-square&labelColor=111111)
-![PACS](https://img.shields.io/badge/PACS-111111?style=flat-square&labelColor=111111)
+</div>
 
-**AI / ML**
+<br><br>
 
-![MLX](https://img.shields.io/badge/Apple_MLX-111111?style=flat-square&logo=apple&logoColor=ffffff)
+**// OPERATOR BRIEF**
 
-**Infrastructure**
+Radiologist writing production infrastructure. I build the systems that connect AI to real diagnostic workflows — PACS, EHR, DICOM, FHIR, worklists, critical findings routing. I understand the clinical requirements of reading CTs at 0200h and the engineering constraints of building auditable systems that operate on patient data at scale.
 
-![Next.js](https://img.shields.io/badge/Next.js-111111?style=flat-square&logo=next.js&logoColor=ffffff)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-111111?style=flat-square&logo=postgresql&logoColor=ffffff)
-![Docker](https://img.shields.io/badge/Docker-111111?style=flat-square&logo=docker&logoColor=ffffff)
-![Supabase](https://img.shields.io/badge/Supabase-111111?style=flat-square&logo=supabase&logoColor=ffffff)
+Currently deploying Laudos.AI — autonomous agent infrastructure for radiology.
 
----
+<br><br>
+
+**// DOMAIN MATRIX**
 
 ```
-PRINCIPLE
-──────────────────────────────────────────────────────────────
-  Good medical AI is boring.
-  Reliable. Explainable. Auditable. Fails gracefully.
-  That is what I build.
-──────────────────────────────────────────────────────────────
+┌─────────────────────────────────────────────────────────────────────┐
+│                                                                     │
+│   AUTONOMOUS AI AGENTS          MEDICAL IMAGING PIPELINES           │
+│   ░░░░░░░░░░░░░░░░░░░░         ░░░░░░░░░░░░░░░░░░░░░░░░           │
+│                                                                     │
+│   LLM ORCHESTRATION             STRUCTURED REPORTING                │
+│   ░░░░░░░░░░░░░░░░░░           ░░░░░░░░░░░░░░░░░░░░               │
+│                                                                     │
+│   PACS / EHR INTEGRATION        CRITICAL FINDINGS ROUTING           │
+│   ░░░░░░░░░░░░░░░░░░░░░        ░░░░░░░░░░░░░░░░░░░░░░░            │
+│                                                                     │
+│   DICOM · FHIR R4 · HL7        RADIOLOGY WORKFLOW AUTOMATION        │
+│   ░░░░░░░░░░░░░░░░░░░░░        ░░░░░░░░░░░░░░░░░░░░░░░░░░░        │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
 ```
+
+<br><br>
+
+**// SYSTEMS**
+
+```
+LANGUAGES         ██████████████████████████████████████████  TypeScript
+                  ████████████████████████████████░░░░░░░░░░  Python
+                  ██████████████████░░░░░░░░░░░░░░░░░░░░░░░  Swift
+                  ████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  Shell
+
+MEDICAL           DICOM         ■ ■ ■ ■ ■ ■ ■ ■ ■ ■  NATIVE
+                  FHIR R4       ■ ■ ■ ■ ■ ■ ■ ■ ■ □  PRODUCTION
+                  HL7 v2.x      ■ ■ ■ ■ ■ ■ ■ ■ □ □  INTEGRATION
+                  PACS          ■ ■ ■ ■ ■ ■ ■ ■ ■ ■  NATIVE
+
+AI / ML           Anthropic     ■ ■ ■ ■ ■ ■ ■ ■ ■ ■  PRIMARY
+                  OpenAI        ■ ■ ■ ■ ■ ■ ■ ■ ■ □  PRODUCTION
+                  Apple MLX     ■ ■ ■ ■ ■ ■ ■ □ □ □  EXPERIMENTAL
+
+INFRA             Next.js       ■ ■ ■ ■ ■ ■ ■ ■ ■ ■  CORE
+                  PostgreSQL    ■ ■ ■ ■ ■ ■ ■ ■ ■ ■  CORE
+                  Supabase      ■ ■ ■ ■ ■ ■ ■ ■ ■ □  PRODUCTION
+                  Docker        ■ ■ ■ ■ ■ ■ ■ ■ □ □  DEPLOYMENT
+                  Hetzner       ■ ■ ■ ■ ■ ■ ■ □ □ □  HOSTING
+```
+
+<br><br>
+
+**// ACTIVE DEPLOYMENT**
+
+```
+╔═══════════════════════════════════════════════════════════════╗
+║                                                               ║
+║   LAUDOS.AI                                                   ║
+║   Autonomous Agent Infrastructure for Radiology               ║
+║                                                               ║
+║   ┌───────────┐  ┌───────────┐  ┌───────────┐  ┌──────────┐  ║
+║   │  COPILOT  │──│  LAUD.AI  │──│   CRIT    │──│  GUIDE   │  ║
+║   │  Voice +  │  │  Report   │  │  Critical │  │ Evidence │  ║
+║   │  Editor   │  │  Engine   │  │  Findings │  │ Follow-  │  ║
+║   │           │  │  (RAG)    │  │  Routing  │  │ up Recs  │  ║
+║   └───────────┘  └───────────┘  └───────────┘  └──────────┘  ║
+║        │              │              │              │          ║
+║   ─────┴──────────────┴──────────────┴──────────────┴─────    ║
+║                    UNIFIED PIPELINE                           ║
+║                                                               ║
+║   STATUS ··········· OPERATIONAL                              ║
+║   REPORTS GENERATED · 12,000+                                 ║
+║   ACTIVE OPERATORS ·· 60+                                     ║
+║   GROWTH ············ ~40% MoM                                ║
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+```
+
+<br><br>
+
+**// DOCTRINE**
+
+```
+          Good medical AI is boring.
+          Reliable.  Explainable.  Auditable.
+          Fails gracefully.
+          That is what I build.
+```
+
+<br><br>
 
 <div align="center">
-<sub>laudos.ai &nbsp;·&nbsp; natannpr@protonmail.com</sub>
+
+```
+─── SIGNALS ────────────────────────────────────────────────────
+     laudos.ai          natannpr@protonmail.com
+────────────────────────────────────────────────────────────────
+```
+
+<sub>São Paulo, BR · 25°31'S 46°38'W</sub>
+
 </div>
