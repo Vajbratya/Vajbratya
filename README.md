@@ -1,6 +1,6 @@
 **natan paraíso ribeiro**
 
-radiologist · systems engineer · [laudos.ai](https://laudos.ai)
+radiologist · systems engineer · [laudobook.com](https://laudobook.com)
 
 ---
 
