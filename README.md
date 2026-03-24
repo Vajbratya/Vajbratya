@@ -1,4 +1,4 @@
-**natan paraíso ribeiro**
+**natan**
 
 radiologist · systems engineer · [laudobook.com](https://laudobook.com)
 
