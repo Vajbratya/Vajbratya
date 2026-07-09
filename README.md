@@ -6,6 +6,8 @@ radiologist · systems engineer · [laudobook.com](https://laudobook.com)
 
 building autonomous infrastructure for radiology — PACS, EHR, DICOM, FHIR, critical findings. i read CTs and write the code that makes AI work in real clinical environments.
 
+currently building [Laudos.AI](https://www.laudos.ai), AI-assisted radiology reporting for Brazilian clinics, hospitals, and teleradiology teams.
+
 ---
 
 [![activity](https://github-readme-activity-graph.vercel.app/graph?username=Vajbratya&bg_color=0d1117&color=ffffff&line=ffffff&point=ffffff&area_color=ffffff&area=true&hide_border=true&custom_title=)](https://github.com/Vajbratya)
