@@ -1,0 +1,132 @@
+    'realce precoce',
+    'medindo 1,6 cm',
+    'consolidação basal posterior',
+    'sem pneumotórax',
+    'achado crítico',
+    'técnica',
+    'conclusão',
+    'template',
+  ];
+
+  return (
+    <AbsoluteFill style={{overflow: 'hidden'}}>
+      {Array.from({length: 12}).map((_, row) => {
+        const direction = row % 2 === 0 ? 1 : -1;
+        const base = ((frame * (2.2 + row * 0.13) * direction) % 780) - 390;
+        return (
+          <div
+            key={row}
+            style={{
+              position: 'absolute',
+              top: 220 + row * 118,
+              left: -480,
+              width: 2100,
+              display: 'flex',
+              gap: 48,
+              whiteSpace: 'nowrap',
+              translate: `${base}px 0px`,
+              opacity: 0.16 + (row % 4) * 0.06,
+              fontFamily: ibmPlexMono,
+              fontWeight: 500,
+              fontSize: 30 + (row % 3) * 4,
+              letterSpacing: '-0.02em',
+              color: CREAM,
+            }}
+          >
+            {Array.from({length: 7}).map((__, i) => (
+              <span key={i}>{phrases[(row * 3 + i) % phrases.length]}</span>
+            ))}
+          </div>
+        );
+      })}
+    </AbsoluteFill>
+  );
+};
+
+const SceneModelText: React.FC = () => {
+  const frame = useCurrentFrame();
+  const wash = interpolate(frame, [87, 108], [0, 1], {...clamp, easing: ease});
+  return (
+    <AbsoluteFill style={{backgroundColor: INK, color: CREAM, overflow: 'hidden'}}>
+      <RawTextStream />
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(180deg, rgba(25,22,19,0.2), rgba(25,22,19,0.82) 63%, #191613 84%)',
+        }}
+      />
+      <FrameLabel label="01 / MODELO" right="OUTPUT / TOKENS" invert />
+      <div style={{position: 'absolute', left: 66, right: 66, bottom: 160}}>
+        <KineticTitle lines={['MODELOS', 'GERAM TEXTO.']} start={10} invert fontSize={150} />
+        <div
+          style={{
+            marginTop: 36,
+            fontFamily: ibmPlexMono,
+            color: CREAM,
+            fontSize: 22,
+            letterSpacing: '0.06em',
+            opacity: interpolate(frame, [44, 62], [0, 0.58], clamp),
+          }}
+        >
+          TOKENS · PALAVRAS · PROBABILIDADES
+        </div>
+      </div>
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundColor: CREAM,
+          opacity: wash,
+          clipPath: `inset(${interpolate(wash, [0, 1], [50, 0], clamp)}% 0 ${interpolate(wash, [0, 1], [50, 0], clamp)}% 0)`,
+        }}
+      />
+      <FilmTexture invert />
+    </AbsoluteFill>
+  );
+};
+
+const ReportSection: React.FC<{
+  label: string;
+  body: string;
+  index: number;
+  frame: number;
+}> = ({label, body, index, frame}) => {
+  const local = frame - 28 - index * 9;
+  const p = spring({fps: 30, frame: local, config: {damping: 20, stiffness: 170, mass: 0.8}});
+  return (
+    <div
+      style={{
+        opacity: interpolate(local, [-3, 6], [0, 1], clamp),
+        translate: `${interpolate(p, [0, 1], [120, 0], clamp)}px 0px`,
+        borderTop: `1.5px solid ${RULE}`,
+        paddingTop: 22,
+        paddingBottom: 30,
+      }}
+    >
+      <div style={{fontFamily: ibmPlexMono, fontSize: 20, fontWeight: 600, letterSpacing: '0.12em', color: MUTED}}>{label}</div>
+      <div style={{marginTop: 14, fontFamily: instrumentSans, fontSize: 34, lineHeight: 1.23, letterSpacing: '-0.025em', color: INK}}>{body}</div>
+    </div>
+  );
+};
+
+const SceneTextIsNotReport: React.FC = () => {
+  const frame = useCurrentFrame();
+  const split = interpolate(frame, [0, 20], [0, 1], {...clamp, easing: ease});
+  const rawOpacity = interpolate(frame, [22, 48], [1, 0.1], clamp);
+  return (
+    <AbsoluteFill style={{backgroundColor: CREAM, color: INK, overflow: 'hidden'}}>
+      <FrameLabel label="02 / AUTORIA" right="TEXTO ≠ LAUDO" />
+      <div
+        style={{
+          position: 'absolute',
+          left: 66,
+          right: 66,
+          top: 215,
+          display: 'grid',
+          gridTemplateColumns: '0.95fr 1.25fr',
+          gap: 46,
+        }}
+      >
+        <div style={{opacity: rawOpacity}}>
+          <div style={{fontFamily: ibmPlexMono, fontSize: 22, color: MUTED, letterSpacing: '0.09em', marginBottom: 22}}>RAW TEXT</div>
