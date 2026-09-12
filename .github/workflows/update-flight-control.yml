@@ -1,0 +1,59 @@
+name: update-flight-control
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */6 * * *'
+  push:
+    branches:
+      - main
+    paths:
+      - README.md
+      - scripts/**
+      - .github/workflows/update-flight-control.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-flight-control-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  update:
+    if: github.repository == format('{0}/{0}', github.repository_owner)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Fetch contribution data
+        env:
+          PROFILE_USERNAME: ${{ github.repository_owner }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/fetch-contributions.mjs
+
+      - name: Render SVG
+        env:
+          PROFILE_USERNAME: ${{ github.repository_owner }}
+        run: node scripts/render-ship-signal.mjs
+
+      - name: Commit changes
+        run: |
+          if git diff --quiet -- docs/data.json assets/ship-signal.svg; then
+            echo "No changes."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add docs/data.json assets/ship-signal.svg
+          git commit -m "chore: update GitHub flight control"
+          git push

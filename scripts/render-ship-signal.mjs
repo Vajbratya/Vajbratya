@@ -1,205 +1,312 @@
 import { readFile, writeFile } from 'node:fs/promises';
 
 const USERNAME = process.env.PROFILE_USERNAME || 'Vajbratya';
-const DATA_URL = new URL('../docs/data.json', import.meta.url);
-const OUTPUT_URL = new URL('../assets/activity.svg', import.meta.url);
+const DATA = new URL('../docs/data.json', import.meta.url);
+const OUT = new URL('../assets/ship-signal.svg', import.meta.url);
 
-const formatInt = (value) => new Intl.NumberFormat('en-US').format(value);
-const escapeXml = (value) => String(value)
-  .replaceAll('&', '&amp;')
-  .replaceAll('<', '&lt;')
-  .replaceAll('>', '&gt;')
-  .replaceAll('"', '&quot;')
-  .replaceAll("'", '&apos;');
+const n = (v) => new Intl.NumberFormat('en-US').format(v);
+const esc = (v) =>
+  String(v)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&apos;');
 
-function shortDate(date) {
-  return new Intl.DateTimeFormat('en-US', {
+const d = (s) => new Date(`${s}T00:00:00Z`);
+
+const dateLabel = (s) =>
+  new Intl.DateTimeFormat('en-US', {
     month: 'short',
     day: 'numeric',
     timeZone: 'UTC',
-  }).format(new Date(`${date}T00:00:00Z`));
+  }).format(d(s));
+
+const monthLabel = (s) =>
+  new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    year: '2-digit',
+    timeZone: 'UTC',
+  })
+    .format(d(`${s}-01`))
+    .toUpperCase();
+
+const sum = (arr) => arr.reduce((a, b) => a + b, 0);
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+
+const arc = (cx, cy, r, a1, a2) => {
+  const x1 = cx + Math.cos(a1) * r;
+  const y1 = cy + Math.sin(a1) * r;
+  const x2 = cx + Math.cos(a2) * r;
+  const y2 = cy + Math.sin(a2) * r;
+
+  return `M ${x1.toFixed(2)} ${y1.toFixed(2)} A ${r} ${r} 0 ${
+    a2 - a1 > Math.PI ? 1 : 0
+  } 1 ${x2.toFixed(2)} ${y2.toFixed(2)}`;
+};
+
+const raw = JSON.parse(await readFile(DATA, 'utf8'));
+const days = raw.days.filter((x) => Number.isFinite(x.count)).slice(-365);
+
+if (days.length < 300) {
+  throw new Error(`Need at least 300 days, got ${days.length}.`);
 }
 
-function rollingAverage(values, size = 7) {
-  const output = [];
-  const queue = [];
-  let sum = 0;
-  for (const value of values) {
-    queue.push(value);
-    sum += value;
-    if (queue.length > size) sum -= queue.shift();
-    output.push(sum / queue.length);
-  }
-  return output;
+const counts = days.map((x) => x.count || 0);
+const total = sum(counts);
+const activeDays = counts.filter((x) => x > 0).length;
+const activeRate = (activeDays / days.length) * 100;
+const dailyAverage = total / days.length;
+const peak = days.reduce((a, b) => (b.count > a.count ? b : a), days[0]);
+const maxCount = Math.max(1, ...counts);
+
+let longest = 0;
+let streak = 0;
+
+for (const c of counts) {
+  streak = c > 0 ? streak + 1 : 0;
+  longest = Math.max(longest, streak);
 }
 
-function pathFromPoints(points) {
-  if (!points.length) return '';
-  let path = `M ${points[0][0].toFixed(2)} ${points[0][1].toFixed(2)}`;
-  for (let i = 0; i < points.length - 1; i += 1) {
-    const p0 = points[Math.max(0, i - 1)];
-    const p1 = points[i];
-    const p2 = points[i + 1];
-    const p3 = points[Math.min(points.length - 1, i + 2)];
-    const c1x = p1[0] + (p2[0] - p0[0]) / 6;
-    const c1y = p1[1] + (p2[1] - p0[1]) / 6;
-    const c2x = p2[0] - (p3[0] - p1[0]) / 6;
-    const c2y = p2[1] - (p3[1] - p1[1]) / 6;
-    path += ` C ${c1x.toFixed(2)} ${c1y.toFixed(2)}, ${c2x.toFixed(2)} ${c2y.toFixed(2)}, ${p2[0].toFixed(2)} ${p2[1].toFixed(2)}`;
-  }
-  return path;
+let current = 0;
+let i = days.length - 1;
+
+if (days[i]?.date === new Date().toISOString().slice(0, 10) && days[i]?.count === 0) {
+  i -= 1;
 }
 
-function computeStats(days) {
-  const counts = days.map((day) => day.count ?? 0);
-  const total = counts.reduce((sum, value) => sum + value, 0);
-  const activeDays = counts.filter((value) => value > 0).length;
-  const peak = days.reduce((best, day) => day.count > best.count ? day : best, days[0]);
-
-  let current = 0;
-  let longest = 0;
-  let run = 0;
-  for (const day of days) {
-    if (day.count > 0) {
-      run += 1;
-      longest = Math.max(longest, run);
-    } else {
-      run = 0;
-    }
-  }
-
-  let index = days.length - 1;
-  const today = new Date().toISOString().slice(0, 10);
-  if (days[index]?.date === today && days[index]?.count === 0) index -= 1;
-  while (index >= 0 && days[index].count > 0) {
-    current += 1;
-    index -= 1;
-  }
-
-  return {
-    total,
-    activeDays,
-    activeRate: days.length ? (activeDays / days.length) * 100 : 0,
-    dailyAverage: days.length ? total / days.length : 0,
-    peak,
-    current,
-    longest,
-  };
+while (i >= 0 && days[i].count > 0) {
+  current += 1;
+  i -= 1;
 }
 
-function monthLabels(days, x, width) {
-  const labels = [];
-  let lastMonth = '';
-  days.forEach((day, index) => {
-    const monthKey = day.date.slice(0, 7);
-    if (monthKey === lastMonth) return;
-    lastMonth = monthKey;
-    const label = new Intl.DateTimeFormat('en-US', {
-      month: 'short',
-      timeZone: 'UTC',
-    }).format(new Date(`${day.date}T00:00:00Z`)).toUpperCase();
-    const position = x + (index / Math.max(1, days.length - 1)) * width;
-    labels.push(`<text class="month" x="${position.toFixed(2)}" y="386">${label}</text>`);
-  });
-  return labels.join('\n');
+const roll = counts.map((_, idx) => {
+  const part = counts.slice(Math.max(0, idx - 6), idx + 1);
+  return sum(part) / part.length;
+});
+
+const last7 = roll.at(-1) || 0;
+const max7 = Math.max(1, ...roll);
+const last30 = sum(counts.slice(-30));
+const prev30 = sum(counts.slice(-60, -30));
+const momentum = prev30 > 0 ? ((last30 - prev30) / prev30) * 100 : 0;
+
+const monthMap = new Map();
+
+for (const day of days) {
+  const key = day.date.slice(0, 7);
+  if (!monthMap.has(key)) monthMap.set(key, []);
+  monthMap.get(key).push(day);
 }
 
-function heatmap(days, x, y, width) {
-  const byDate = new Map(days.map((day) => [day.date, day]));
-  const first = new Date(`${days[0].date}T00:00:00Z`);
-  const start = new Date(first);
-  start.setUTCDate(start.getUTCDate() - start.getUTCDay());
-  const last = new Date(`${days.at(-1).date}T00:00:00Z`);
-  const columns = Math.ceil((last - start) / 86_400_000 / 7) + 1;
-  const cell = 10;
-  const gapX = Math.max(3, (width - columns * cell) / Math.max(1, columns - 1));
-  const gapY = 3;
-  const elements = [];
+const months = [...monthMap.entries()].map(([key, value]) => ({
+  key,
+  label: monthLabel(key),
+  total: sum(value.map((x) => x.count || 0)),
+}));
 
-  for (let column = 0; column < columns; column += 1) {
-    for (let row = 0; row < 7; row += 1) {
-      const date = new Date(start);
-      date.setUTCDate(start.getUTCDate() + column * 7 + row);
-      const key = date.toISOString().slice(0, 10);
-      const day = byDate.get(key);
-      if (!day) continue;
-      const px = x + column * (cell + gapX);
-      const py = y + row * (cell + gapY);
-      const level = Math.max(0, Math.min(4, day.level ?? 0));
-      const label = `${formatInt(day.count)} contribution${day.count === 1 ? '' : 's'} · ${shortDate(day.date)}`;
-      const url = `https://github.com/${encodeURIComponent(USERNAME)}?from=${day.date}&to=${day.date}`;
-      elements.push(`<a href="${url}" target="_blank"><rect class="day l${level}" x="${px.toFixed(2)}" y="${py.toFixed(2)}" width="${cell}" height="${cell}" rx="2"><title>${escapeXml(label)}</title></rect></a>`);
-    }
-  }
+const peakMonth = months.reduce((a, b) => (b.total > a.total ? b : a), months[0]);
+const maxMonthTotal = Math.max(1, ...months.map((x) => x.total));
 
-  return elements.join('\n');
+const wdNames = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+const weekdays = wdNames.map((name) => ({ name, total: 0, days: 0 }));
+
+for (const day of days) {
+  const w = d(day.date).getUTCDay();
+  weekdays[w].total += day.count || 0;
+  weekdays[w].days += 1;
 }
 
-const raw = JSON.parse(await readFile(DATA_URL, 'utf8'));
-const days = raw.days.filter((day) => Number.isFinite(day.count)).slice(-371);
-if (days.length < 300) throw new Error(`Need at least 300 contribution days, got ${days.length}.`);
+for (const day of weekdays) {
+  day.avg = day.days ? day.total / day.days : 0;
+}
 
-const stats = computeStats(days);
-const smooth = rollingAverage(days.map((day) => day.count), 7);
-const plot = { x: 64, y: 190, width: 1072, height: 176 };
-const maxSmooth = Math.max(1, ...smooth);
-const points = smooth.map((value, index) => [
-  plot.x + (index / Math.max(1, smooth.length - 1)) * plot.width,
-  plot.y + plot.height - (value / maxSmooth) * plot.height,
-]);
-const line = pathFromPoints(points);
-const area = `${line} L ${plot.x + plot.width} ${plot.y + plot.height} L ${plot.x} ${plot.y + plot.height} Z`;
-const peakIndex = days.findIndex((day) => day.date === stats.peak.date);
-const peakPoint = points[Math.max(0, peakIndex)];
-const latest = days.at(-1);
+const dominantWeekday = weekdays.reduce((a, b) => (b.avg > a.avg ? b : a), weekdays[0]);
+
+const cx = 386;
+const cy = 336;
+
+const dots = days
+  .map((day, idx) => {
+    const ring = Math.floor(idx / 92);
+    const slot = idx % 92;
+    const ringSize = Math.min(92, days.length - ring * 92);
+    const angle = -Math.PI / 2 + (slot / ringSize) * Math.PI * 2;
+    const radius = 116 + ring * 38;
+    const power = clamp((day.count || 0) / maxCount, 0, 1);
+    const x = cx + Math.cos(angle) * radius;
+    const y = cy + Math.sin(angle) * radius;
+    const href = esc(
+      `https://github.com/${encodeURIComponent(USERNAME)}?from=${day.date}&to=${day.date}`,
+    );
+
+    return `<a href="${href}" target="_blank" rel="noopener noreferrer"><circle class="orbit-dot" cx="${x.toFixed(
+      2,
+    )}" cy="${y.toFixed(2)}" r="${(1.5 + power * 4.1).toFixed(
+      2,
+    )}" style="opacity:${(0.14 + power * 0.86).toFixed(3)}"><title>${esc(
+      `${n(day.count || 0)} contribution${(day.count || 0) === 1 ? '' : 's'} · ${dateLabel(
+        day.date,
+      )}`,
+    )}</title></circle></a>`;
+  })
+  .join('\n');
+
+const spokes = months
+  .map((m, idx) => {
+    const angle = -Math.PI / 2 + (idx / months.length) * Math.PI * 2;
+    const len = 38 + (m.total / maxMonthTotal) * 120;
+    const x1 = cx + Math.cos(angle) * 80;
+    const y1 = cy + Math.sin(angle) * 80;
+    const x2 = cx + Math.cos(angle) * (80 + len);
+    const y2 = cy + Math.sin(angle) * (80 + len);
+    const lx = cx + Math.cos(angle) * (118 + len);
+    const ly = cy + Math.sin(angle) * (118 + len);
+    const anchor =
+      Math.cos(angle) > 0.22 ? 'start' : Math.cos(angle) < -0.22 ? 'end' : 'middle';
+    const sw = 4 + (m.total / maxMonthTotal) * 8;
+
+    return `<g><line class="month-spoke" x1="${x1.toFixed(2)}" y1="${y1.toFixed(
+      2,
+    )}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(
+      2,
+    )}" style="stroke-width:${sw.toFixed(2)}"><title>${esc(
+      `${m.label} · ${n(m.total)} contributions`,
+    )}</title></line><circle class="month-node" cx="${x2.toFixed(
+      2,
+    )}" cy="${y2.toFixed(
+      2,
+    )}" r="5.4"/><text class="month-label mono" x="${lx.toFixed(
+      2,
+    )}" y="${(ly - 6).toFixed(2)}" text-anchor="${anchor}">${m.label}</text><text class="month-value" x="${lx.toFixed(
+      2,
+    )}" y="${(ly + 12).toFixed(2)}" text-anchor="${anchor}">${n(m.total)}</text></g>`;
+  })
+  .join('\n');
+
+const gauges = [
+  {
+    label: 'ACTIVE RATE',
+    value: activeRate / 100,
+    text: `${activeRate.toFixed(0)}%`,
+    color: 'var(--aqua)',
+    r: 106,
+  },
+  {
+    label: 'CURRENT STREAK',
+    value: current / Math.max(longest, 1),
+    text: `${current}d`,
+    color: 'var(--violet)',
+    r: 124,
+  },
+  {
+    label: '7D FLOW',
+    value: last7 / max7,
+    text: `${last7.toFixed(1)}`,
+    color: 'var(--amber)',
+    r: 142,
+  },
+]
+  .map((g, idx) => {
+    const a1 = Math.PI * 0.88 + idx * 0.04;
+    const a2 = Math.PI * 2.12 - idx * 0.04;
+    const av = a1 + (a2 - a1) * clamp(g.value, 0, 1);
+    const la = a1 + (a2 - a1) / 2;
+    const lx = cx + Math.cos(la) * g.r;
+    const ly = cy + Math.sin(la) * g.r;
+
+    return `<g><path class="arc-track" d="${arc(cx, cy, g.r, a1, a2)}"/><path class="arc-value" d="${arc(
+      cx,
+      cy,
+      g.r,
+      a1,
+      av,
+    )}" style="stroke:${g.color}"><title>${esc(
+      `${g.label}: ${g.text}`,
+    )}</title></path><text class="arc-label mono" x="${lx.toFixed(
+      2,
+    )}" y="${(ly - 5).toFixed(2)}" text-anchor="middle">${g.label}</text><text class="arc-text" x="${lx.toFixed(
+      2,
+    )}" y="${(ly + 13).toFixed(2)}" text-anchor="middle">${g.text}</text></g>`;
+  })
+  .join('\n');
+
+const maxWeekdayAvg = Math.max(1, ...weekdays.map((x) => x.avg));
+
+const bars = weekdays
+  .map((day, idx) => {
+    const y = 84 + idx * 30;
+    const w = (day.avg / maxWeekdayAvg) * 236;
+
+    return `<g transform="translate(24 ${y})"><text class="mini-label mono" x="0" y="12">${
+      day.name
+    }</text><rect class="bar-bg" x="56" y="2" width="236" height="12" rx="6"/><rect class="bar-fill" x="56" y="2" width="${w.toFixed(
+      2,
+    )}" height="12" rx="6"><title>${esc(
+      `${day.name}: ${day.avg.toFixed(1)} avg/day · ${n(day.total)} total contributions`,
+    )}</title></rect><text class="mini-value" x="304" y="12">${day.avg.toFixed(
+      1,
+    )}</text></g>`;
+  })
+  .join('\n');
+
+const b = raw.breakdown || {
+  commits: 0,
+  pullRequests: 0,
+  issues: 0,
+  reviews: 0,
+};
+
+const latest = days.at(-1).date;
+const momentumText = `${momentum >= 0 ? '+' : ''}${momentum.toFixed(0)}%`;
+
 const svg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
-  <title id="title">${escapeXml(USERNAME)} GitHub Ship Signal</title>
-  <desc id="desc">${formatInt(stats.total)} profile-visible GitHub contributions across the last year. Animated seven-day shipping velocity and a clickable daily heatmap.</desc>
-  <defs>
-    <linearGradient id="fill" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="var(--fg)" stop-opacity=".18"/>
-      <stop offset=".62" stop-color="var(--fg)" stop-opacity=".035"/>
-      <stop offset="1" stop-color="var(--fg)" stop-opacity="0"/>
-    </linearGradient>
-    <filter id="soft"><feGaussianBlur stdDeviation="2.4"/></filter>
-  </defs>
-  <style>
-    :root{--bg:#09090b;--fg:#fafafa;--muted:#8b8b93;--grid:#25252b;--c0:#17171b;--c1:#12351f;--c2:#17652f;--c3:#21a347;--c4:#39d353;--accent:#39d353}
-    @media(prefers-color-scheme:light){:root{--bg:#fff;--fg:#111;--muted:#6b6b73;--grid:#e7e7ea;--c0:#eeeeef;--c1:#b9ecc6;--c2:#72d98c;--c3:#36b85b;--c4:#138a39;--accent:#138a39}}
-    text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;fill:var(--fg)}
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}
-    .eyebrow{font-size:13px;font-weight:760;letter-spacing:1.8px}.muted{fill:var(--muted)}
-    .hero{font-size:56px;font-weight:770;letter-spacing:-3px}.label,.month{font-size:11px;font-weight:690;letter-spacing:1.08px;fill:var(--muted)}
-    .metric{font-size:23px;font-weight:710;letter-spacing:-.45px}.month{text-anchor:middle}
-    .grid{stroke:var(--grid);stroke-width:1;vector-effect:non-scaling-stroke}
-    .area{fill:url(#fill);opacity:0;animation:fade .8s .4s ease forwards}
-    .trace-glow{fill:none;stroke:var(--fg);stroke-width:6;opacity:.08;filter:url(#soft)}
-    .trace{fill:none;stroke:var(--fg);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:1800;stroke-dashoffset:1800;animation:draw 2.1s cubic-bezier(.16,1,.3,1) forwards}
-    .live,.latest{fill:var(--accent);animation:pulse 1.7s ease-in-out infinite}.peak{fill:var(--bg);stroke:var(--fg);stroke-width:2}
-    .day{stroke:transparent;stroke-width:1.4;vector-effect:non-scaling-stroke;transform-box:fill-box;transform-origin:center;transition:transform 120ms ease,stroke 120ms ease;cursor:pointer}
-    .day:hover{transform:scale(1.55);stroke:var(--fg)}.l0{fill:var(--c0)}.l1{fill:var(--c1)}.l2{fill:var(--c2)}.l3{fill:var(--c3)}.l4{fill:var(--c4)}
-    @keyframes draw{to{stroke-dashoffset:0}}@keyframes fade{to{opacity:1}}@keyframes pulse{0%,100%{opacity:.42}50%{opacity:1}}
-    @media(prefers-reduced-motion:reduce){.trace{animation:none;stroke-dashoffset:0}.area{animation:none;opacity:1}.live,.latest{animation:none}}
-  </style>
-  <rect width="1200" height="520" rx="18" fill="var(--bg)"/><rect x=".5" y=".5" width="1199" height="519" rx="17.5" fill="none" stroke="var(--grid)"/>
-  <g transform="translate(64 46)"><circle class="live" cx="4" cy="4" r="4"/><text class="eyebrow mono" x="18" y="9">NATAN / SHIP SIGNAL</text><text class="eyebrow mono muted" x="1072" y="9" text-anchor="end">LIVE · GITHUB · UTC</text></g>
-  <text class="hero" x="64" y="132">${formatInt(stats.total)}</text><text class="label mono" x="66" y="155">PROFILE-VISIBLE CONTRIBUTIONS · ROLLING 365D</text>
-  <g transform="translate(584 95)">
-    <text class="metric" x="0" y="0">${stats.dailyAverage.toFixed(1)}</text><text class="label mono" x="0" y="23">DAILY AVG</text>
-    <text class="metric" x="178" y="0">${stats.activeRate.toFixed(0)}%</text><text class="label mono" x="178" y="23">ACTIVE RATE</text>
-    <text class="metric" x="356" y="0">${formatInt(stats.peak.count)}</text><text class="label mono" x="356" y="23">PEAK · ${shortDate(stats.peak.date).toUpperCase()}</text>
-    <text class="metric" x="526" y="0">${stats.longest}d</text><text class="label mono" x="526" y="23">LONGEST STREAK</text>
-  </g>
-  <text class="label mono" x="64" y="178">SHIPPING VELOCITY · 7D ROLLING AVERAGE</text><text class="label mono" x="1136" y="178" text-anchor="end">GITHUB-NATIVE DATA · NO THIRD-PARTY GRAPH SERVICE</text>
-  <g aria-hidden="true"><line class="grid" x1="64" x2="1136" y1="190" y2="190"/><line class="grid" x1="64" x2="1136" y1="248.67" y2="248.67" opacity=".62"/><line class="grid" x1="64" x2="1136" y1="307.33" y2="307.33" opacity=".62"/><line class="grid" x1="64" x2="1136" y1="366" y2="366"/></g>
-  <path class="area" d="${area}"/><path class="trace-glow" d="${line}"/><path class="trace" d="${line}"/>
-  <line class="grid" x1="${peakPoint[0].toFixed(2)}" x2="${peakPoint[0].toFixed(2)}" y1="${(peakPoint[1] - 8).toFixed(2)}" y2="366" opacity=".45"/><circle class="peak" cx="${peakPoint[0].toFixed(2)}" cy="${peakPoint[1].toFixed(2)}" r="4.5"><title>${formatInt(stats.peak.count)} contributions · ${shortDate(stats.peak.date)}</title></circle>
-  <circle class="latest" cx="${points.at(-1)[0].toFixed(2)}" cy="${points.at(-1)[1].toFixed(2)}" r="4.3"><title>${formatInt(latest.count)} contributions · ${shortDate(latest.date)}</title></circle>
-  ${monthLabels(days, plot.x, plot.width)}
-  <g>${heatmap(days, 64, 398, 1072)}</g>
-  <text class="label mono" x="64" y="508">HOVER / CLICK A DAY FOR GITHUB DETAIL</text><text class="label mono" x="1136" y="508" text-anchor="end">UPDATED ${latest.date} · CURRENT STREAK ${stats.current}D · ${stats.activeDays} ACTIVE DAYS</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+<title id="title">${esc(USERNAME)} GitHub Flight Control</title>
+<desc id="desc">A radial mission-control visualization of ${n(total)} GitHub contributions over the last 365 days.</desc>
+<defs>
+<radialGradient id="coreGlow" cx="50%" cy="50%" r="60%"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.92"/><stop offset="20%" stop-color="#b794ff" stop-opacity="0.72"/><stop offset="48%" stop-color="#5eead4" stop-opacity="0.28"/><stop offset="75%" stop-color="#0ea5e9" stop-opacity="0.08"/><stop offset="100%" stop-color="#0ea5e9" stop-opacity="0"/></radialGradient>
+<linearGradient id="panelBorder" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2b3440"/><stop offset="100%" stop-color="#11161d"/></linearGradient>
+<linearGradient id="barFill" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#67e8f9"/><stop offset="100%" stop-color="#38bdf8"/></linearGradient>
+<filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="8"/></filter>
+</defs>
+<style>
+:root{--bg:#05070b;--panel:#0b1017;--panel2:#0f1622;--fg:#f8fafc;--muted:#8b9bb2;--line:#1c2634;--aqua:#67e8f9;--sky:#38bdf8;--violet:#b794ff;--amber:#fbbf24;--pink:#fb7185}
+@media(prefers-color-scheme:light){:root{--bg:#f6f9fc;--panel:#ffffff;--panel2:#f9fbff;--fg:#0f172a;--muted:#52627b;--line:#d8e1ef;--aqua:#0891b2;--sky:#0284c7;--violet:#7c3aed;--amber:#d97706;--pink:#e11d48}}
+text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;fill:var(--fg)} .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}
+.eyebrow{font-size:12px;font-weight:760;letter-spacing:2.2px;fill:var(--muted)} .title{font-size:42px;font-weight:800;letter-spacing:-1.8px} .subtitle{font-size:15px;fill:var(--muted)} .section{font-size:12px;font-weight:740;letter-spacing:1.9px;fill:var(--muted)} .hero{font-size:68px;font-weight:820;letter-spacing:-3.5px} .hero-sub{font-size:14px;letter-spacing:1.6px;fill:var(--muted)} .big-label{font-size:13px;fill:var(--muted);letter-spacing:1.2px} .big-value{font-size:28px;font-weight:780;letter-spacing:-1px} .mini-label{font-size:12px;fill:var(--muted)} .mini-value{font-size:12px;font-weight:700} .month-label{font-size:11px;fill:var(--muted);letter-spacing:1.1px} .month-value{font-size:12px;font-weight:720}
+.orbit-guide{fill:none;stroke:var(--line);stroke-width:1;stroke-dasharray:3 8} .orbit-dot{fill:var(--aqua)} .month-spoke{stroke:var(--sky);stroke-linecap:round;opacity:.82;filter:url(#softGlow)} .month-node{fill:var(--fg)} .arc-track{fill:none;stroke:var(--line);stroke-width:8;stroke-linecap:round} .arc-value{fill:none;stroke-width:8;stroke-linecap:round;filter:url(#softGlow)} .arc-label{font-size:10px;fill:var(--muted);letter-spacing:1px} .arc-text{font-size:13px;font-weight:760} .bar-bg{fill:var(--line)} .bar-fill{fill:url(#barFill)} .chip{fill:var(--panel2);stroke:var(--line)} .divider{stroke:var(--line);stroke-width:1} .wire{stroke:var(--line);stroke-width:1.2;fill:none} .wire-strong{stroke:var(--aqua);stroke-width:1.8;fill:none;opacity:.85}
+.pulse{animation:pulse 2.4s ease-in-out infinite} .scan{animation:spin 38s linear infinite;transform-origin:${cx}px ${cy}px} .scan-slow{animation:spinReverse 72s linear infinite;transform-origin:${cx}px ${cy}px} .float{animation:float 4.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}} @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}} @keyframes spinReverse{from{transform:rotate(360deg)}to{transform:rotate(0deg)}} @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}} @media(prefers-reduced-motion:reduce){.pulse,.scan,.scan-slow,.float{animation:none}}
+</style>
+<rect width="1200" height="720" fill="var(--bg)"/><rect x="18" y="18" width="1164" height="684" rx="28" fill="var(--panel)" stroke="url(#panelBorder)"/>
+<g transform="translate(48 50)"><text class="eyebrow mono" x="0" y="0">GITHUB FLIGHT CONTROL / ${esc(
+  USERNAME.toUpperCase(),
+)}</text><text class="title" x="0" y="48">Not a heatmap. A launch console.</text><text class="subtitle" x="0" y="74">365-day output as orbital telemetry, monthly thrust, and weekday behavior. Click any glowing dot for the exact GitHub day.</text></g>
+<g transform="translate(886 54)"><rect class="chip" x="0" y="0" width="246" height="124" rx="20"/><text class="section mono" x="22" y="28">CORE METRICS</text><text class="hero" x="22" y="76">${n(
+  total,
+)}</text><text class="hero-sub mono" x="22" y="100">TOTAL CONTRIBUTIONS / 365D</text><text class="hero-sub mono" x="22" y="118">LAST SYNC ${latest} · LIVE DATA</text></g>
+<g><circle class="orbit-guide scan-slow" cx="${cx}" cy="${cy}" r="116"/><circle class="orbit-guide scan" cx="${cx}" cy="${cy}" r="154"/><circle class="orbit-guide scan-slow" cx="${cx}" cy="${cy}" r="192"/><circle class="orbit-guide scan" cx="${cx}" cy="${cy}" r="230"/><circle class="orbit-guide scan-slow" cx="${cx}" cy="${cy}" r="268"/></g>
+<g>${dots}</g><g>${spokes}</g><g>${gauges}</g>
+<g class="float"><circle cx="${cx}" cy="${cy}" r="68" fill="url(#coreGlow)" opacity=".95"/><circle class="pulse" cx="${cx}" cy="${cy}" r="46" fill="none" stroke="var(--aqua)" stroke-width="1.3" opacity=".72"/><circle cx="${cx}" cy="${cy}" r="16" fill="var(--fg)" opacity=".96"/><text class="section mono" x="${cx}" y="${
+  cy - 10
+}" text-anchor="middle">LAUNCH CORE</text><text class="big-value" x="${cx}" y="${
+  cy + 22
+}" text-anchor="middle">${dailyAverage.toFixed(1)}/day</text></g>
+<g transform="translate(760 214)"><rect class="chip" x="0" y="0" width="372" height="436" rx="24"/><text class="section mono" x="24" y="30">WEEKDAY BEHAVIOR</text><text class="subtitle" x="24" y="54">Average contributions per weekday. This shows when the engine usually runs hottest.</text>${bars}<line class="divider" x1="24" y1="312" x2="348" y2="312"/><text class="section mono" x="24" y="340">OPERATING NOTES</text><text class="big-label" x="24" y="370">Dominant weekday</text><text class="big-value" x="24" y="398">${dominantWeekday.name} / ${dominantWeekday.avg.toFixed(
+  1,
+)}</text><text class="big-label" x="24" y="426">30D momentum</text><text class="big-value" x="24" y="454">${momentumText}</text><text class="big-label" x="24" y="482">Peak day</text><text class="big-value" x="24" y="510">${n(
+  peak.count,
+)} · ${dateLabel(peak.date)}</text><text class="big-label" x="24" y="538">Breakdown</text><text class="subtitle" x="24" y="562">${n(
+  b.commits,
+)} commits · ${n(b.pullRequests)} PRs · ${n(b.issues)} issues · ${n(b.reviews)} reviews</text></g>
+<g transform="translate(52 548)"><rect class="chip" x="0" y="0" width="654" height="102" rx="24"/><text class="section mono" x="26" y="30">MISSION SUMMARY</text><path class="wire" d="M 24 66 H 630"/><circle cx="24" cy="66" r="4" fill="var(--aqua)"/><circle cx="232" cy="66" r="4" fill="var(--violet)"/><circle cx="420" cy="66" r="4" fill="var(--amber)"/><circle cx="630" cy="66" r="4" fill="var(--pink)"/><text class="mini-label" x="24" y="90">${activeDays} active days</text><text class="mini-label" x="232" y="90">${longest}d longest streak</text><text class="mini-label" x="420" y="90">${peakMonth.label} strongest month</text><text class="mini-label" x="630" y="90" text-anchor="end">${n(
+  peakMonth.total,
+)} contributions</text></g>
+<g transform="translate(52 214)"><path class="wire-strong" d="M 560 126 C 624 126, 682 164, 734 212"/><path class="wire" d="M 540 184 C 614 212, 676 244, 728 286"/><path class="wire" d="M 520 244 C 612 280, 654 336, 728 420"/></g>
+<text class="eyebrow mono" x="54" y="686">SELF-HOSTED ON GITHUB / NO THIRD-PARTY GRAPH ENGINE / UPDATED ${latest}</text><text class="eyebrow mono" x="1146" y="686" text-anchor="end">CLICK A DOT TO OPEN THE EXACT DAY</text>
 </svg>`;
 
-await writeFile(OUTPUT_URL, `${svg}\n`, 'utf8');
-console.log(`Rendered Ship Signal: ${formatInt(stats.total)} contributions.`);
+await writeFile(OUT, `${svg}\n`, 'utf8');
+
+console.log(`Rendered GitHub Flight Control for ${USERNAME}: ${n(total)} contributions.`);
