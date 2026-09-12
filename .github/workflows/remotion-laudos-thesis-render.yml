@@ -1,0 +1,41 @@
+name: Render Laudos.AI thesis with Remotion
+
+on:
+  push:
+    branches:
+      - remotion/laudos-thesis-render-20260912
+    paths:
+      - 'remotion-laudos-thesis/**'
+      - '.github/workflows/remotion-laudos-thesis-render.yml'
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: remotion-laudos-thesis
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: remotion-laudos-thesis/package.json
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Render with Remotion
+        run: npm run render
+
+      - name: Upload MP4
+        uses: actions/upload-artifact@v4
+        with:
+          name: laudos-ai-tese-remotion
+          path: remotion-laudos-thesis/out/laudos-ai-tese-remotion.mp4
+          if-no-files-found: error
+          retention-days: 3
