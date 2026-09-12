@@ -1,0 +1,115 @@
+          <div
+            style={{
+              fontFamily: ibmPlexMono,
+              fontSize: 29,
+              lineHeight: 1.46,
+              letterSpacing: '-0.03em',
+              color: INK,
+              maxHeight: 830,
+              overflow: 'hidden',
+            }}
+          >
+            olha tem falha de enchimento central em cavaleiro e uma consolidação basal direita com broncograma, deve ser infarto pulmonar, septo abaulado sugerindo sobrecarga direita, sem derrame, sem pneumotórax...
+          </div>
+        </div>
+        <div
+          style={{
+            opacity: split,
+            translate: `${interpolate(split, [0, 1], [130, 0], clamp)}px 0px`,
+            backgroundColor: PAPER,
+            border: `1px solid ${RULE}`,
+            padding: 34,
+            boxShadow: '0 30px 80px rgba(25,22,19,0.08)',
+          }}
+        >
+          <div style={{fontFamily: ibmPlexMono, fontSize: 20, color: MUTED, letterSpacing: '0.12em', marginBottom: 12}}>ANGIOTC DO TÓRAX</div>
+          <ReportSection label="TÉCNICA" body="Aquisição angiográfica após contraste intravenoso, protocolo para TEP." index={0} frame={frame} />
+          <ReportSection label="ANÁLISE" body="Falha de enchimento central em cavaleiro, com sinais de sobrecarga das câmaras direitas." index={1} frame={frame} />
+          <ReportSection label="CONCLUSÃO" body="Tromboembolismo pulmonar agudo central, com sinais de repercussão hemodinâmica." index={2} frame={frame} />
+        </div>
+      </div>
+      <div style={{position: 'absolute', left: 66, right: 66, bottom: 132}}>
+        <KineticTitle lines={['TEXTO NÃO', 'É LAUDO.']} start={8} fontSize={126} maxWidth={880} />
+        <div
+          style={{
+            marginTop: 26,
+            fontFamily: instrumentSans,
+            fontSize: 42,
+            fontWeight: 500,
+            letterSpacing: '-0.035em',
+            opacity: interpolate(frame, [58, 80], [0, 1], clamp),
+          }}
+        >
+          Radiologistas geram laudos.
+        </div>
+      </div>
+      <FilmTexture />
+    </AbsoluteFill>
+  );
+};
+
+const Waveform: React.FC<{frame: number}> = ({frame}) => {
+  const bars = 48;
+  return (
+    <div style={{height: 88, display: 'flex', alignItems: 'center', gap: 5}}>
+      {Array.from({length: bars}).map((_, i) => {
+        const wave = Math.sin((frame + i * 4.1) * 0.22) * 0.5 + 0.5;
+        const envelope = Math.sin((i / (bars - 1)) * Math.PI);
+        const h = 8 + wave * envelope * 68;
+        return <div key={i} style={{width: 5, height: h, backgroundColor: INK, opacity: 0.72}} />;
+      })}
+    </div>
+  );
+};
+
+const SceneReasoning: React.FC = () => {
+  const frame = useCurrentFrame();
+  const words = ['VOCÊ OLHA.', 'DECIDE.', 'DITA.'];
+  const reportProgress = interpolate(frame, [76, 154], [0, 1], {...clamp, easing: ease});
+  return (
+    <AbsoluteFill style={{backgroundColor: CREAM, color: INK, overflow: 'hidden'}}>
+      <FrameLabel label="03 / FLUXO" right="RACIOCÍNIO → ASSINATURA" />
+      <div style={{position: 'absolute', left: 66, right: 66, top: 210}}>
+        {words.map((word, i) => {
+          const local = frame - i * 17;
+          return (
+            <div
+              key={word}
+              style={{
+                fontFamily: instrumentSans,
+                fontSize: 120,
+                fontWeight: 600,
+                letterSpacing: '-0.06em',
+                lineHeight: 0.95,
+                opacity: interpolate(local, [0, 8], [0.12, 1], clamp),
+                translate: `${interpolate(local, [0, 10], [26, 0], clamp)}px 0px`,
+              }}
+            >
+              {word}
+            </div>
+          );
+        })}
+      </div>
+
+      <div
+        style={{
+          position: 'absolute',
+          left: 66,
+          right: 66,
+          top: 630,
+          borderTop: `1px solid ${RULE}`,
+          borderBottom: `1px solid ${RULE}`,
+          padding: '26px 0',
+        }}
+      >
+        <Waveform frame={frame} />
+        <div style={{fontFamily: ibmPlexMono, fontSize: 20, color: MUTED, marginTop: 10, letterSpacing: '0.05em'}}>
+          “...tromboembolismo pulmonar central, em cavaleiro...”
+        </div>
+      </div>
+
+      <div
+        style={{
+          position: 'absolute',
+          left: 66,
+          right: 66,
