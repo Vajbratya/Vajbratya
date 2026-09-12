@@ -8,7 +8,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/generate-activity.mjs'
-      - 'scripts/render-ship-signal.mjs'
+      - 'scripts/render-ship-signal-v2.mjs'
       - '.github/workflows/activity.yml'
 
 permissions:
@@ -39,19 +39,19 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Render Ship Signal
-        run: node scripts/render-ship-signal.mjs
+        run: node scripts/render-ship-signal-v2.mjs
         env:
           PROFILE_USERNAME: Vajbratya
 
       - name: Commit refreshed assets
         run: |
-          if git diff --quiet -- assets/activity.svg docs/data.json; then
+          if git diff --quiet -- assets/ship-signal.svg docs/data.json; then
             echo "Activity signal is already current."
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/activity.svg docs/data.json
+          git add assets/ship-signal.svg docs/data.json
           git commit -m "chore(profile): refresh activity signal"
           git push
