@@ -47,6 +47,8 @@ const counts = days.map((day) => day.count || 0);
 const total = sum(counts);
 const activeDays = counts.filter((count) => count > 0).length;
 const activeRate = (activeDays / days.length) * 100;
+const dailyAverage = total / days.length;
+const activeDayAverage = activeDays ? total / activeDays : 0;
 
 let longestStreak = 0;
 let streak = 0;
@@ -65,13 +67,6 @@ while (currentIndex >= 0 && days[currentIndex].count > 0) {
   currentStreak += 1;
   currentIndex -= 1;
 }
-
-const last30 = sum(counts.slice(-30));
-const previous30 = sum(counts.slice(-60, -30));
-const momentum = previous30 > 0 ? ((last30 - previous30) / previous30) * 100 : null;
-const momentumLabel =
-  momentum === null ? 'comparison unavailable' : `${momentum >= 0 ? '+' : ''}${momentum.toFixed(0)}% vs previous 30d`;
-const momentumClass = momentum !== null && momentum < 0 ? 'negative' : 'positive';
 
 const peakDay = days.reduce((best, day) => (day.count > best.count ? day : best), days[0]);
 
@@ -131,16 +126,16 @@ const rangeTo = raw.range?.to || days.at(-1).date;
 const svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="320" viewBox="0 0 900 320" role="img" aria-labelledby="title desc">
 <title id="title">${escapeXml(USERNAME)} GitHub activity</title>
-<desc id="desc">365-day GitHub contribution summary with activity, streak, recent output, weekly trend, and monthly totals.</desc>
+<desc id="desc">365-day GitHub contribution summary with active days, streaks, averages, weekly trend, and monthly totals.</desc>
 <style>
-:root{--bg:#0d1117;--fg:#f0f6fc;--muted:#8b949e;--border:#30363d;--grid:#21262d;--accent:#3fb950;--negative:#f85149;--bar:#238636}
-@media(prefers-color-scheme:light){:root{--bg:#ffffff;--fg:#1f2328;--muted:#656d76;--border:#d0d7de;--grid:#d8dee4;--accent:#1a7f37;--negative:#cf222e;--bar:#2da44e}}
+:root{--bg:#0d1117;--fg:#f0f6fc;--muted:#8b949e;--border:#30363d;--grid:#21262d;--accent:#3fb950;--bar:#238636}
+@media(prefers-color-scheme:light){:root{--bg:#ffffff;--fg:#1f2328;--muted:#656d76;--border:#d0d7de;--grid:#d8dee4;--accent:#1a7f37;--bar:#2da44e}}
 text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;fill:var(--fg)}
 .title{font-size:19px;font-weight:650}.range{font-size:11px;fill:var(--muted)}
 .metric-value{font-size:27px;font-weight:650;letter-spacing:-.5px}.metric-label{font-size:10px;font-weight:600;letter-spacing:.8px;fill:var(--muted)}.metric-note{font-size:10px;fill:var(--muted)}
 .section{font-size:11px;font-weight:600;fill:var(--fg)}.section-note{font-size:10px;fill:var(--muted)}
 .grid{stroke:var(--grid);stroke-width:1}.trend{fill:none;stroke:var(--accent);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.month-bar{fill:var(--bar)}.month-label{font-size:8px;fill:var(--muted)}
-.footer{font-size:10px;fill:var(--muted)}.positive{fill:var(--accent)}.negative{fill:var(--negative)}
+.footer{font-size:10px;fill:var(--muted)}
 </style>
 <rect x="0.5" y="0.5" width="899" height="319" rx="14" fill="var(--bg)" stroke="var(--border)"/>
 <text class="title" x="28" y="38">${escapeXml(USERNAME)} · GitHub activity</text>
@@ -151,7 +146,7 @@ text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,san
 <g transform="translate(28 68)"><text class="metric-value" x="0" y="24">${formatNumber(total)}</text><text class="metric-label" x="0" y="45">CONTRIBUTIONS</text><text class="metric-note" x="0" y="61">365-day total</text></g>
 <g transform="translate(244 68)"><text class="metric-value" x="0" y="24">${activeDays}</text><text class="metric-label" x="0" y="45">ACTIVE DAYS</text><text class="metric-note" x="0" y="61">${activeRate.toFixed(0)}% of days</text></g>
 <g transform="translate(456 68)"><text class="metric-value" x="0" y="24">${longestStreak}d</text><text class="metric-label" x="0" y="45">LONGEST STREAK</text><text class="metric-note" x="0" y="61">current ${currentStreak}d</text></g>
-<g transform="translate(674 68)"><text class="metric-value" x="0" y="24">${formatNumber(last30)}</text><text class="metric-label" x="0" y="45">LAST 30 DAYS</text><text class="metric-note ${momentumClass}" x="0" y="61">${escapeXml(momentumLabel)}</text></g>
+<g transform="translate(674 68)"><text class="metric-value" x="0" y="24">${dailyAverage.toFixed(1)}</text><text class="metric-label" x="0" y="45">DAILY AVERAGE</text><text class="metric-note" x="0" y="61">${activeDayAverage.toFixed(1)} on active days</text></g>
 
 <line x1="28" y1="151" x2="872" y2="151" stroke="var(--border)"/>
 
