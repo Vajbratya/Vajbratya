@@ -1,0 +1,45 @@
+          opacity: interpolate(brand, [0, 1], [0, 1], clamp),
+          translate: `0px ${interpolate(brand, [0, 1], [35, 0], clamp)}px`,
+        }}
+      >
+        <div style={{display: 'flex', alignItems: 'center', gap: 24}}>
+          <LogoMark />
+          <div>
+            <div style={{fontFamily: instrumentSans, fontSize: 46, fontWeight: 600, letterSpacing: '-0.045em'}}>Laudos.AI</div>
+            <div style={{fontFamily: ibmPlexMono, fontSize: 17, color: MUTED, letterSpacing: '0.08em', marginTop: 6}}>CAMADA PÓS-IMAGEM</div>
+          </div>
+        </div>
+        <div style={{fontFamily: ibmPlexMono, fontSize: 19, fontWeight: 600, letterSpacing: '0.08em'}}>LAUDOS.AI</div>
+      </div>
+      <FilmTexture />
+    </AbsoluteFill>
+  );
+};
+
+export const PremiumThesis: React.FC = () => {
+  const frame = useCurrentFrame();
+  const masterScale = interpolate(frame, [0, 869], [1.012, 1], clamp);
+  return (
+    <AbsoluteFill style={{backgroundColor: CREAM, scale: masterScale, transformOrigin: '50% 50%'}}>
+      <Audio src={staticFile('soundtrack.wav')} volume={0.82} />
+      <Sequence from={0} durationInFrames={110} layout="absolute-fill">
+        <SceneModelText />
+      </Sequence>
+      <Sequence from={100} durationInFrames={130} layout="absolute-fill">
+        <SceneTextIsNotReport />
+      </Sequence>
+      <Sequence from={220} durationInFrames={190} layout="absolute-fill">
+        <SceneReasoning />
+      </Sequence>
+      <Sequence from={400} durationInFrames={180} layout="absolute-fill">
+        <SceneLayer />
+      </Sequence>
+      <Sequence from={570} durationInFrames={150} layout="absolute-fill">
+        <SceneProof />
+      </Sequence>
+      <Sequence from={700} durationInFrames={170} layout="absolute-fill">
+        <SceneFinal />
+      </Sequence>
+    </AbsoluteFill>
+  );
+};
