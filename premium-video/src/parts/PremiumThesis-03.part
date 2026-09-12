@@ -1,0 +1,113 @@
+          top: 830,
+          height: 640,
+          border: `1px solid ${RULE}`,
+          backgroundColor: PAPER,
+          overflow: 'hidden',
+        }}
+      >
+        <div style={{position: 'absolute', inset: 0, padding: 34}}>
+          <div style={{fontFamily: ibmPlexMono, fontSize: 19, color: MUTED, letterSpacing: '0.1em'}}>LAUDO ESTRUTURADO · AO VIVO</div>
+          <div style={{height: 1, background: RULE, marginTop: 22}} />
+          {[
+            ['ANÁLISE', 'Falha de enchimento vascular central, estendendo-se pela bifurcação do tronco pulmonar.'],
+            ['CONCLUSÃO', 'Tromboembolismo pulmonar agudo central (em cavaleiro).'],
+            ['CRIT', 'Achado crítico sinalizado para conferência e comunicação.'],
+          ].map(([label, body], i) => {
+            const start = 87 + i * 22;
+            const opacity = interpolate(frame, [start, start + 12], [0, 1], clamp);
+            const width = interpolate(frame, [start, start + 26], [0, 100], clamp);
+            return (
+              <div key={label} style={{marginTop: 34, opacity}}>
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'baseline'}}>
+                  <div style={{fontFamily: ibmPlexMono, fontSize: 18, fontWeight: 600, letterSpacing: '0.1em'}}>{label}</div>
+                  <div style={{fontFamily: ibmPlexMono, fontSize: 16, color: MUTED}}>{Math.round(width)}%</div>
+                </div>
+                <div style={{marginTop: 12, fontFamily: instrumentSans, fontSize: 31, lineHeight: 1.22, letterSpacing: '-0.025em'}}>{body}</div>
+                <div style={{marginTop: 17, height: 2, background: RULE}}>
+                  <div style={{height: '100%', width: `${width}%`, background: SIGNAL}} />
+                </div>
+              </div>
+            );
+          })}
+          <div
+            style={{
+              position: 'absolute',
+              right: 34,
+              bottom: 30,
+              fontFamily: ibmPlexMono,
+              fontWeight: 600,
+              fontSize: 18,
+              letterSpacing: '0.08em',
+              opacity: reportProgress,
+            }}
+          >
+            PRONTO PARA REVISÃO ✓
+          </div>
+        </div>
+      </div>
+
+      <div
+        style={{
+          position: 'absolute',
+          left: 66,
+          right: 66,
+          bottom: 112,
+          fontFamily: instrumentSans,
+          fontSize: 48,
+          fontWeight: 600,
+          lineHeight: 1.02,
+          letterSpacing: '-0.045em',
+          opacity: interpolate(frame, [130, 152], [0, 1], clamp),
+        }}
+      >
+        Não é transcrição.<br />É redação radiológica.
+      </div>
+      <FilmTexture />
+    </AbsoluteFill>
+  );
+};
+
+const DepthPlane: React.FC<{
+  index: number;
+  frame: number;
+  label: string;
+  detail: string;
+}> = ({index, frame, label, detail}) => {
+  const spacing = 114;
+  const travel = frame * 14.5;
+  const z = 820 - index * spacing - travel;
+  const scale = Math.max(0.15, 1.9 - z / 720);
+  const opacity = interpolate(z, [-250, 80, 640, 900], [0, 1, 0.78, 0], clamp);
+  const y = (index % 2 === 0 ? -1 : 1) * (30 + (index % 3) * 26);
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        left: 115,
+        right: 115,
+        top: 720 + y,
+        height: 260,
+        padding: 30,
+        border: `1.5px solid ${CREAM}`,
+        background: 'rgba(25,22,19,0.78)',
+        color: CREAM,
+        opacity,
+        scale,
+        translate: `0px ${z * 0.22}px`,
+        filter: `blur(${Math.max(0, z - 620) / 80}px)`,
+        transformOrigin: '50% 50%',
+        boxShadow: '0 35px 110px rgba(0,0,0,0.28)',
+      }}
+    >
+      <div style={{fontFamily: ibmPlexMono, fontSize: 18, letterSpacing: '0.12em', opacity: 0.7}}>0{index + 1}</div>
+      <div style={{fontFamily: instrumentSans, fontWeight: 600, fontSize: 62, letterSpacing: '-0.05em', marginTop: 22}}>{label}</div>
+      <div style={{fontFamily: instrumentSans, fontSize: 28, letterSpacing: '-0.02em', marginTop: 9, opacity: 0.8}}>{detail}</div>
+    </div>
+  );
+};
+
+const SceneLayer: React.FC = () => {
+  const frame = useCurrentFrame();
+  const planes = [
+    ['CONTEXTO', 'Indicação · comparativos · worklist'],
+    ['TEMPLATE', 'Técnica · análise · conclusão'],
