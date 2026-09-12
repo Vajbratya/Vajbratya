@@ -1,0 +1,14 @@
+{
+  "name": "laudos-thesis-remotion",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "render": "remotion render src/index.ts LaudosThesis out/laudos-ai-tese-remotion.mp4 --codec=h264 --crf=16"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.506",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "remotion": "4.0.506"
+  }
+}
