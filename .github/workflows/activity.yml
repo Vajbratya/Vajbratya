@@ -8,6 +8,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/generate-activity.mjs'
+      - 'scripts/render-ship-signal.mjs'
       - '.github/workflows/activity.yml'
 
 permissions:
@@ -31,11 +32,16 @@ jobs:
         with:
           node-version: '24'
 
-      - name: Generate activity signal
+      - name: Fetch GitHub contribution data
         run: node scripts/generate-activity.mjs
         env:
           PROFILE_USERNAME: Vajbratya
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Render Ship Signal
+        run: node scripts/render-ship-signal.mjs
+        env:
+          PROFILE_USERNAME: Vajbratya
 
       - name: Commit refreshed assets
         run: |
