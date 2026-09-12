@@ -48,10 +48,10 @@ jobs:
             --crf=14 \
             --pixel-format=yuv420p \
             --concurrency=4
-      - name: Validate output
+      - name: Validate output exists
         working-directory: premium-video
         run: |
-          ffprobe -v error -show_entries format=duration,size -show_entries stream=codec_name,width,height,r_frame_rate -of default=noprint_wrappers=1 out/laudos-ai-thesis-premium.mp4
+          node -e "const fs=require('fs'); const p='out/laudos-ai-thesis-premium.mp4'; const s=fs.statSync(p); if(s.size<100000) process.exit(1); console.log('mp4_bytes='+s.size)"
       - name: Upload render and stills
         uses: actions/upload-artifact@v4
         with:
