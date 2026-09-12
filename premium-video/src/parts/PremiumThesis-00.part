@@ -1,0 +1,145 @@
+import React from 'react';
+import {
+  AbsoluteFill,
+  Easing,
+  interpolate,
+  Sequence,
+  spring,
+  staticFile,
+  useCurrentFrame,
+  useVideoConfig,
+} from 'remotion';
+import {Audio} from '@remotion/media';
+import {loadFont as loadInstrumentSans} from '@remotion/google-fonts/InstrumentSans';
+import {loadFont as loadIBMPlexMono} from '@remotion/google-fonts/IBMPlexMono';
+
+const {fontFamily: instrumentSans} = loadInstrumentSans('normal', {
+  weights: ['400', '500', '600', '700'],
+  subsets: ['latin', 'latin-ext'],
+});
+const {fontFamily: ibmPlexMono} = loadIBMPlexMono('normal', {
+  weights: ['500', '600'],
+  subsets: ['latin', 'latin-ext'],
+});
+
+const CREAM = '#F5F2EC';
+const INK = '#191613';
+const MUTED = '#746E66';
+const PAPER = '#FBF8F2';
+const RULE = '#CBC4B9';
+const SIGNAL = '#191613';
+
+const clamp = {extrapolateLeft: 'clamp' as const, extrapolateRight: 'clamp' as const};
+const ease = Easing.bezier(0.16, 1, 0.3, 1);
+
+const FrameLabel: React.FC<{label: string; right?: string; invert?: boolean}> = ({label, right, invert = false}) => (
+  <div
+    style={{
+      position: 'absolute',
+      top: 66,
+      left: 66,
+      right: 66,
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      color: invert ? CREAM : INK,
+      fontFamily: ibmPlexMono,
+      fontWeight: 600,
+      fontSize: 21,
+      letterSpacing: '0.11em',
+      textTransform: 'uppercase',
+    }}
+  >
+    <span>{label}</span>
+    {right ? <span style={{opacity: 0.55}}>{right}</span> : null}
+  </div>
+);
+
+const FilmTexture: React.FC<{invert?: boolean}> = ({invert = false}) => {
+  const frame = useCurrentFrame();
+  const driftX = ((frame * 37) % 53) - 26;
+  const driftY = ((frame * 19) % 47) - 23;
+  return (
+    <AbsoluteFill style={{pointerEvents: 'none', overflow: 'hidden'}}>
+      <div
+        style={{
+          position: 'absolute',
+          inset: -80,
+          opacity: invert ? 0.055 : 0.035,
+          translate: `${driftX}px ${driftY}px`,
+          backgroundImage:
+            'radial-gradient(circle at 20% 30%, currentColor 0 0.7px, transparent 0.8px), radial-gradient(circle at 70% 55%, currentColor 0 0.6px, transparent 0.7px)',
+          backgroundSize: '9px 9px, 13px 13px',
+          color: invert ? CREAM : INK,
+          mixBlendMode: invert ? 'screen' : 'multiply',
+        }}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: `linear-gradient(${invert ? CREAM : INK} 1px, transparent 1px)`,
+          backgroundSize: '100% 5px',
+          opacity: 0.018,
+        }}
+      />
+    </AbsoluteFill>
+  );
+};
+
+const KineticTitle: React.FC<{
+  lines: string[];
+  start?: number;
+  invert?: boolean;
+  fontSize?: number;
+  align?: 'left' | 'center';
+  maxWidth?: number;
+}> = ({lines, start = 0, invert = false, fontSize = 132, align = 'left', maxWidth = 940}) => {
+  const frame = useCurrentFrame();
+  const color = invert ? CREAM : INK;
+  return (
+    <div
+      style={{
+        width: maxWidth,
+        color,
+        fontFamily: instrumentSans,
+        fontSize,
+        fontWeight: 600,
+        lineHeight: 0.89,
+        letterSpacing: '-0.065em',
+        textAlign: align,
+      }}
+    >
+      {lines.map((line, index) => {
+        const local = frame - start - index * 5;
+        const progress = spring({fps: 30, frame: local, config: {damping: 18, stiffness: 150, mass: 0.85}});
+        const opacity = interpolate(local, [-3, 7], [0, 1], clamp);
+        return (
+          <div
+            key={line}
+            style={{
+              opacity,
+              translate: `${interpolate(progress, [0, 1], [0, 0], clamp)}px ${interpolate(progress, [0, 1], [82, 0], clamp)}px`,
+              rotate: `${interpolate(progress, [0, 1], [1.5, 0], clamp)}deg`,
+              filter: `blur(${interpolate(local, [-2, 10], [14, 0], clamp)}px)`,
+            }}
+          >
+            {line}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+const RawTextStream: React.FC = () => {
+  const frame = useCurrentFrame();
+  const phrases = [
+    'nódulo sólido hipoecogênico',
+    'sem derrame pleural',
+    'restrição à difusão',
+    '8 mm no lobo superior direito',
+    'comparativo 2024',
+    'sem linfonodomegalias',
+    'PI-RADS 5',
+    'tromboembolismo pulmonar',
