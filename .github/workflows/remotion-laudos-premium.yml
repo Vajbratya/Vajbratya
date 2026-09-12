@@ -1,0 +1,61 @@
+name: Render premium Laudos.AI thesis
+
+on:
+  push:
+    branches:
+      - remotion/laudos-thesis-premium-20260912
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        working-directory: premium-video
+        run: npm install --no-audit --no-fund
+      - name: Generate sound design
+        working-directory: premium-video
+        run: python3 scripts/generate-soundtrack.py
+      - name: Assemble composition
+        working-directory: premium-video
+        run: cat src/parts/PremiumThesis-*.part > src/PremiumThesis.tsx
+      - name: Typecheck
+        working-directory: premium-video
+        run: npx tsc --noEmit
+      - name: Render art-direction stills
+        working-directory: premium-video
+        run: |
+          mkdir -p out/stills
+          npx remotion still src/index.ts LaudosPremium out/stills/01-model.png --frame=55
+          npx remotion still src/index.ts LaudosPremium out/stills/02-report.png --frame=165
+          npx remotion still src/index.ts LaudosPremium out/stills/03-reasoning.png --frame=325
+          npx remotion still src/index.ts LaudosPremium out/stills/04-layer.png --frame=490
+          npx remotion still src/index.ts LaudosPremium out/stills/05-authorship.png --frame=650
+          npx remotion still src/index.ts LaudosPremium out/stills/06-thesis.png --frame=785
+      - name: Render with Remotion
+        working-directory: premium-video
+        run: |
+          npx remotion render src/index.ts LaudosPremium out/laudos-ai-thesis-premium.mp4 \
+            --codec=h264 \
+            --crf=14 \
+            --pixel-format=yuv420p \
+            --concurrency=4
+      - name: Validate output
+        working-directory: premium-video
+        run: |
+          ffprobe -v error -show_entries format=duration,size -show_entries stream=codec_name,width,height,r_frame_rate -of default=noprint_wrappers=1 out/laudos-ai-thesis-premium.mp4
+      - name: Upload render and stills
+        uses: actions/upload-artifact@v4
+        with:
+          name: laudos-ai-thesis-premium
+          path: premium-video/out/
+          if-no-files-found: error
+          retention-days: 3
