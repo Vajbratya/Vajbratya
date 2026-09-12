@@ -16,17 +16,17 @@ text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,san
 <text class="title" x="28" y="38">Vajbratya · GitHub activity</text>
 <text class="range" x="872" y="38" text-anchor="end">Sep 13, 2025 → Sep 12, 2026</text>
 
-<g transform="translate(28 68)"><text class="metric-value" x="0" y="24">5,892</text><text class="metric-label" x="0" y="45">CONTRIBUTIONS</text><text class="metric-note" x="0" y="61">365-day total</text></g>
+<g transform="translate(28 68)"><text class="metric-value" x="0" y="24">5,893</text><text class="metric-label" x="0" y="45">CONTRIBUTIONS</text><text class="metric-note" x="0" y="61">365-day total</text></g>
 <g transform="translate(244 68)"><text class="metric-value" x="0" y="24">314</text><text class="metric-label" x="0" y="45">ACTIVE DAYS</text><text class="metric-note" x="0" y="61">86% of days</text></g>
 <g transform="translate(456 68)"><text class="metric-value" x="0" y="24">36d</text><text class="metric-label" x="0" y="45">LONGEST STREAK</text><text class="metric-note" x="0" y="61">current 2d</text></g>
-<g transform="translate(674 68)"><text class="metric-value" x="0" y="24">128</text><text class="metric-label" x="0" y="45">LAST 30 DAYS</text><text class="metric-note negative" x="0" y="61">-47% vs previous 30d</text></g>
+<g transform="translate(674 68)"><text class="metric-value" x="0" y="24">129</text><text class="metric-label" x="0" y="45">LAST 30 DAYS</text><text class="metric-note negative" x="0" y="61">-47% vs previous 30d</text></g>
 
 <line x1="28" y1="151" x2="872" y2="151" stroke="var(--border)"/>
 
 <text class="section" x="28" y="178">Weekly contributions</text>
 <text class="section-note" x="528" y="178" text-anchor="end">last 52 weeks</text>
 <line class="grid" x1="28" y1="194" x2="528" y2="194"/><line class="grid" x1="28" y1="230" x2="528" y2="230"/><line class="grid" x1="28" y1="266" x2="528" y2="266"/>
-<polyline class="trend" points="28.0,258.8 37.8,260.9 47.6,260.1 57.4,244.9 67.2,222.7 77.0,249.7 86.8,237.8 96.6,265.1 106.4,265.1 116.2,261.9 126.0,233.2 135.8,238.8 145.6,239.9 155.5,238.2 165.3,260.7 175.1,194.0 184.9,227.4 194.7,210.5 204.5,240.9 214.3,228.1 224.1,247.7 233.9,255.3 243.7,255.1 253.5,217.2 263.3,248.8 273.1,260.3 282.9,263.6 292.7,261.0 302.5,242.2 312.3,260.9 322.1,256.8 331.9,244.4 341.7,240.9 351.5,247.1 361.3,261.2 371.1,264.5 380.9,204.0 390.7,257.1 400.5,263.6 410.4,248.3 420.2,254.4 430.0,260.1 439.8,260.0 449.6,250.3 459.4,254.7 469.2,260.4 479.0,259.2 488.8,256.0 498.6,261.3 508.4,260.3 518.2,265.7 528.0,262.1"/>
+<polyline class="trend" points="28.0,258.8 37.8,260.9 47.6,260.1 57.4,244.9 67.2,222.7 77.0,249.7 86.8,237.8 96.6,265.1 106.4,265.1 116.2,261.9 126.0,233.2 135.8,238.8 145.6,239.9 155.5,238.2 165.3,260.7 175.1,194.0 184.9,227.4 194.7,210.5 204.5,240.9 214.3,228.1 224.1,247.7 233.9,255.3 243.7,255.1 253.5,217.2 263.3,248.8 273.1,260.3 282.9,263.6 292.7,261.0 302.5,242.2 312.3,260.9 322.1,256.8 331.9,244.4 341.7,240.9 351.5,247.1 361.3,261.2 371.1,264.5 380.9,204.0 390.7,257.1 400.5,263.6 410.4,248.3 420.2,254.4 430.0,260.1 439.8,260.0 449.6,250.3 459.4,254.7 469.2,260.4 479.0,259.2 488.8,256.0 498.6,261.3 508.4,260.3 518.2,265.7 528.0,261.9"/>
 
 <text class="section" x="574" y="178">Monthly totals</text>
 <text class="section-note" x="872" y="178" text-anchor="end">last 12 months</text>
@@ -42,7 +42,7 @@ text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,san
 <g><rect class="month-bar" x="777.3" y="250.7" width="18.4" height="15.3" rx="2"><title>JUN: 283 contributions</title></rect><text class="month-label" x="786.5" y="284" text-anchor="middle">JUN</text></g>
 <g><rect class="month-bar" x="802.8" y="251.4" width="18.4" height="14.6" rx="2"><title>JUL: 270 contributions</title></rect><text class="month-label" x="812.0" y="284" text-anchor="middle">JUL</text></g>
 <g><rect class="month-bar" x="828.2" y="255.9" width="18.4" height="10.1" rx="2"><title>AUG: 186 contributions</title></rect><text class="month-label" x="837.4" y="284" text-anchor="middle">AUG</text></g>
-<g><rect class="month-bar" x="853.6" y="264.0" width="18.4" height="2.0" rx="2"><title>SEP: 27 contributions</title></rect><text class="month-label" x="862.8" y="284" text-anchor="middle">SEP</text></g>
+<g><rect class="month-bar" x="853.6" y="264.0" width="18.4" height="2.0" rx="2"><title>SEP: 28 contributions</title></rect><text class="month-label" x="862.8" y="284" text-anchor="middle">SEP</text></g>
 
 <text class="footer" x="28" y="303">peak day 184 · May 25</text>
 <text class="footer" x="872" y="303" text-anchor="end">updated 2026-09-12</text>
