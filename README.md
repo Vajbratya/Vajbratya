@@ -10,7 +10,11 @@ currently building [Laudos.AI](https://www.laudos.ai), AI-assisted radiology rep
 
 ---
 
-[![activity](https://github-readme-activity-graph.vercel.app/graph?username=Vajbratya&bg_color=0d1117&color=ffffff&line=ffffff&point=ffffff&area_color=ffffff&area=true&hide_border=true&custom_title=)](https://github.com/Vajbratya)
+<a href="https://raw.githubusercontent.com/Vajbratya/Vajbratya/main/assets/activity.svg">
+  <img src="./assets/activity.svg" width="100%" alt="Natan's live GitHub activity signal" />
+</a>
+
+<sub>self-hosted on GitHub · refreshes every 6h · click the signal for the interactive daily view</sub>
 
 ---
 
