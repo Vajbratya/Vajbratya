@@ -10,9 +10,9 @@ currently building [Laudos.AI](https://www.laudos.ai), AI-assisted radiology rep
 
 ---
 
-[![Natan's GitHub Flight Control](https://raw.githubusercontent.com/Vajbratya/Vajbratya/main/assets/ship-signal.svg?v=radial-flight-control-20260912)](https://github.com/Vajbratya)
+[![GitHub activity summary](https://raw.githubusercontent.com/Vajbratya/Vajbratya/main/assets/ship-signal.svg?v=clean-20260912)](https://github.com/Vajbratya)
 
-<sub>self-hosted on GitHub · refreshes every 6h · orbital telemetry for the last 365 days of work</sub>
+<sub>365-day contribution summary · generated from GitHub every 6h</sub>
 
 ---
 
