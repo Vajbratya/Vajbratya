@@ -15,8 +15,8 @@ text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,san
 <text class="handle" x="28" y="27">Vajbratya / 365d</text>
 <text class="range" x="872" y="27" text-anchor="end">2025-09-15 → 2026-09-14</text>
 
-<g transform="translate(28 45)"><text class="value" x="0" y="23">5,900</text><text class="label" x="0" y="40">contributions</text></g>
-<g transform="translate(286 45)"><text class="value" x="0" y="23">313</text><text class="label" x="0" y="40">active days</text></g>
+<g transform="translate(28 45)"><text class="value" x="0" y="23">5,905</text><text class="label" x="0" y="40">contributions</text></g>
+<g transform="translate(286 45)"><text class="value" x="0" y="23">314</text><text class="label" x="0" y="40">active days</text></g>
 <g transform="translate(544 45)"><text class="value" x="0" y="23">9</text><text class="label" x="0" y="40">median / active day</text></g>
 
 <line class="rule" x1="28" y1="178" x2="872" y2="178"/>
@@ -397,10 +397,10 @@ text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,san
 <rect class="recent" x="865.04" y="124.04" width="1.58" height="53.96" rx="0.79"><title>2026-09-11: 28 contributions</title></rect>
 <rect class="recent" x="867.36" y="158.37" width="1.58" height="19.63" rx="0.79"><title>2026-09-12: 2 contributions</title></rect>
 <rect class="recent" x="869.68" y="133.04" width="1.58" height="44.96" rx="0.79"><title>2026-09-13: 15 contributions</title></rect>
-<rect class="idle" x="872.00" y="177.00" width="1.58" height="1.00" rx="0.79"><title>2026-09-14: 0 contributions</title></rect>
+<rect class="recent" x="872.00" y="147.89" width="1.58" height="30.11" rx="0.79"><title>2026-09-14: 5 contributions</title></rect>
 
 <text class="meta" x="28" y="232">36d longest streak</text>
 <text class="meta" x="244" y="232">27% weekend share</text>
-<text class="meta" x="472" y="232">119 last 30d</text>
+<text class="meta" x="472" y="232">124 last 30d</text>
 <text class="meta" x="872" y="232" text-anchor="end">peak 184 · May 25</text>
 </svg>
