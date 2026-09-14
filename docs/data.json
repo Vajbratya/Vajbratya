@@ -1,10 +1,10 @@
 {
   "login": "Vajbratya",
   "range": {
-    "from": "2025-09-14",
-    "to": "2026-09-13"
+    "from": "2025-09-15",
+    "to": "2026-09-14"
   },
-  "total": 5906,
+  "total": 5900,
   "breakdown": {
     "commits": 138,
     "pullRequests": 13,
@@ -12,11 +12,6 @@
     "reviews": 0
   },
   "days": [
-    {
-      "date": "2025-09-14",
-      "count": 10,
-      "weekday": 0
-    },
     {
       "date": "2025-09-15",
       "count": 3,
@@ -1834,8 +1829,13 @@
     },
     {
       "date": "2026-09-13",
-      "count": 11,
+      "count": 15,
       "weekday": 0
+    },
+    {
+      "date": "2026-09-14",
+      "count": 0,
+      "weekday": 1
     }
   ]
 }
