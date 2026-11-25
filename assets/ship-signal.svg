@@ -16,7 +16,7 @@ text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,san
 <text class="range" x="872" y="27" text-anchor="end">2025-11-26 → 2026-11-25</text>
 
 <g transform="translate(28 45)"><text class="value" x="0" y="23">5,148</text><text class="label" x="0" y="40">contributions</text></g>
-<g transform="translate(286 45)"><text class="value" x="0" y="23">302</text><text class="label" x="0" y="40">active days</text></g>
+<g transform="translate(286 45)"><text class="value" x="0" y="23">303</text><text class="label" x="0" y="40">active days</text></g>
 <g transform="translate(544 45)"><text class="value" x="0" y="23">8</text><text class="label" x="0" y="40">median / active day</text></g>
 
 <line class="rule" x1="28" y1="178" x2="872" y2="178"/>
@@ -214,7 +214,7 @@ text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,san
 <rect class="day" x="440.73" y="154.00" width="1.58" height="24.00" rx="0.79"><title>2026-05-23: 3 contributions</title></rect>
 <rect class="day" x="443.04" y="102.35" width="1.58" height="75.65" rx="0.79"><title>2026-05-24: 120 contributions</title></rect>
 <rect class="day" x="445.36" y="96.00" width="1.58" height="82.00" rx="0.79"><title>2026-05-25: 183 contributions</title></rect>
-<rect class="day" x="447.68" y="143.50" width="1.58" height="34.50" rx="0.79"><title>2026-05-26: 7 contributions</title></rect>
+<rect class="day" x="447.68" y="145.52" width="1.58" height="32.48" rx="0.79"><title>2026-05-26: 6 contributions</title></rect>
 <rect class="day" x="450.00" y="145.52" width="1.58" height="32.48" rx="0.79"><title>2026-05-27: 6 contributions</title></rect>
 <rect class="day" x="452.32" y="141.71" width="1.58" height="36.29" rx="0.79"><title>2026-05-28: 8 contributions</title></rect>
 <rect class="day" x="454.64" y="132.08" width="1.58" height="45.92" rx="0.79"><title>2026-05-29: 16 contributions</title></rect>
@@ -397,10 +397,10 @@ text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,san
 <rect class="idle" x="865.04" y="177.00" width="1.58" height="1.00" rx="0.79"><title>2026-11-22: 0 contributions</title></rect>
 <rect class="recent" x="867.36" y="164.50" width="1.58" height="13.50" rx="0.79"><title>2026-11-23: 1 contribution</title></rect>
 <rect class="idle" x="869.68" y="177.00" width="1.58" height="1.00" rx="0.79"><title>2026-11-24: 0 contributions</title></rect>
-<rect class="idle" x="872.00" y="177.00" width="1.58" height="1.00" rx="0.79"><title>2026-11-25: 0 contributions</title></rect>
+<rect class="recent" x="872.00" y="164.50" width="1.58" height="13.50" rx="0.79"><title>2026-11-25: 1 contribution</title></rect>
 
 <text class="meta" x="28" y="232">36d longest streak</text>
 <text class="meta" x="244" y="232">27% weekend share</text>
-<text class="meta" x="472" y="232">107 last 30d</text>
+<text class="meta" x="472" y="232">108 last 30d</text>
 <text class="meta" x="872" y="232" text-anchor="end">peak 183 · May 25</text>
 </svg>
